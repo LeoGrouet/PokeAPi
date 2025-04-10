@@ -1,0 +1,46 @@
+services:
+
+  php:
+    image: php:8.3-fpm-alpine3.20
+    env_file: .env
+    container_name: php
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+      target: dev
+    volumes:
+      - ./apps/backend:/app
+    networks:
+      - default
+  
+  front:
+    image: node:lts-alpine
+    container_name: front
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    ports:
+      - "3000:5173"
+    volumes:
+      - ./apps/frontend:/app
+    working_dir: /app
+    command: npm run dev
+
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+      target: base
+    ports:
+      - 80:80
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./apps/backend:/app/public
+    restart: unless-stopped
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    restart: always
+    ports:
+      - "8080:8080"
