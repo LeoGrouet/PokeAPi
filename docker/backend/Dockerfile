@@ -34,8 +34,7 @@ ARG UID=1000
 ARG GID=1000
 
 RUN addgroup -g $GID user && \
-  adduser -D -u $UID -G user user && \
-  chown -R user:user /app
+  adduser -D -u $UID -G user user
 
 COPY --from=composer /usr/bin/composer /usr/local/bin/composer
 
