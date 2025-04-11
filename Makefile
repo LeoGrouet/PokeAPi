@@ -11,3 +11,6 @@ stop:
 
 prune:
 	docker system prune -a
+
+create-db:
+	@$(DOCKER_RUN) php bin/console doctrine:database:create
