@@ -4,6 +4,8 @@ import App from "./App";
 import "./style.css";
 import ErrorPage from "./pages/ErrorPage";
 import Homepage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import SignInPage from "./pages/SignInPage";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +16,28 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <Homepage />,
+      }
+    ],
+  },
+  {
+    path: "/login",
+    element: <App />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "",
+        element: <LoginPage />,
+      }
+    ],
+  },
+  {
+    path: "/signin",
+    element: <App />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "",
+        element: <SignInPage />,
       }
     ],
   },

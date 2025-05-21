@@ -22,7 +22,14 @@ class User
     string $password,
     DateTimeImmutable $createdAt,
     DateTimeImmutable $updatedAt
-  ) {}
+  ) {
+    $this->id = $id;
+    $this->username = $username;
+    $this->email = $email;
+    $this->password = $password;
+    $this->createdAt = $createdAt;
+    $this->updatedAt = $updatedAt;
+  }
 
   public function getId(): string
   {

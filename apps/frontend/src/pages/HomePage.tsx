@@ -23,11 +23,15 @@ export default function Homepage() {
 
   return (
     <div className="text-3xl font-bold underline">
-      {data.map((result: { name: string }) => (
-        <div key={result.name} className="text-2xl">
-          {result.name}
-        </div>
-      ))}
+      <h1>Pokemon List</h1>
+      <nav> <a href="/login">Log</a></nav>
+      <div className="text-3xl font-bold underline">
+        {data.map((result: { name: string }) => (
+          <div key={result.name} className="text-2xl">
+            {result.name}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

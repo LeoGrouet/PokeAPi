@@ -1,73 +1,74 @@
-FROM composer:2.8.3 AS composer
+# ----- Stage 1: Composer -----
+FROM composer:2.8.8 AS composer
 
-#####################################
-
-### BUILDER
-FROM php:8.3-fpm-alpine3.20 AS builder
-
-WORKDIR /app
+# ----- Stage 2: Builder stage for PHP extensions compilation -----
+FROM php:8.4-fpm-alpine AS builder
 
 ARG UID=1000
 ARG GID=1000
 
-RUN addgroup -g $GID user && \
-  adduser -D -u $UID -G user user
-
-RUN apk add --no-cache --virtual .build-deps \
-  autoconf bash git libzip-dev icu-dev rabbitmq-c-dev \
-  gcc g++ make linux-headers curl && \
-  pecl channel-update pecl.php.net && \
-  pecl install apcu amqp xdebug && \
-  docker-php-ext-enable apcu amqp xdebug && \
-  docker-php-ext-configure zip && \
-  docker-php-ext-install -j"$(nproc)" zip intl opcache pdo pdo_mysql && \
-  apk del --no-network .build-deps
-
-### BASE
-FROM php:8.3-fpm-alpine3.20 AS base
-
 WORKDIR /app
 
-ENV PATH="$PATH:/app/bin"
+# Create user 'user' (UID 1000) and group 'user' (GID 1000)
+RUN addgroup -g $GID user && \
+    adduser -u $UID -D -G user user
+
+RUN apk add --no-cache \
+    bash \
+    curl \
+    g++ \
+    gcc \
+    git \
+    oniguruma-dev \
+    libpng-dev \
+    libxml2-dev \
+    libzip-dev \
+    linux-headers \
+    make \
+    unzip \
+    zip
+
+# Install PHP extensions (as root)
+RUN docker-php-ext-install \
+    pdo_mysql \
+    mbstring \
+    zip \
+    exif \
+    pcntl \
+    bcmath
+
+# ----- Stage 3: Final base image -----
+FROM php:8.4-fpm-alpine AS base
 
 ARG UID=1000
 ARG GID=1000
 
-RUN addgroup -g $GID user && \
-  adduser -D -u $UID -G user user
+WORKDIR /app
 
+# Create user 'user' (UID 1000) and group 'user' (GID 1000)
+RUN addgroup -g $GID user && \
+    adduser -u $UID -D -G user user
+
+RUN mkdir -p /app && \
+    apk add --no-cache \
+        curl \
+        bash \
+        git \
+        libzip && \
+    # Give ownership to existing user/group 'user'
+    chown -R user:user /app
+
+# Copy extensions and Composer, giving ownership to 'user'
+# --chown=user:user will match the existing UID/GID 1000
+COPY --from=builder --chown=user:user /usr/local/lib/php/extensions /usr/local/lib/php/extensions
+COPY --from=builder --chown=user:user /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
 COPY --from=composer /usr/bin/composer /usr/local/bin/composer
-
-COPY --from=builder /usr/local/lib/php/extensions /usr/local/lib/php/extensions
-COPY --from=builder /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
-
-RUN apk add --no-cache bash git libzip icu rabbitmq-c
-
-COPY --chown=$UID:$GID ./apps/backend /app
-
-RUN composer install --no-scripts --no-dev
-
-### DEVELOPMENT
-FROM base AS dev
-
-ENV APP_ENV=dev
-ENV APP_DEBUG=1
+RUN chmod +x /usr/local/bin/composer
 
 USER user
 
-### TEST
-FROM dev AS test
-
-ENV APP_ENV=test
-ENV APP_DEBUG=0
-
-RUN composer install --no-scripts
-
-### PROD
-FROM base AS prod
-
-ENV APP_ENV=prod
-ENV APP_DEBUG=0
-
-RUN composer install --no-scripts --no-dev && \
-  rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+# ----- Stage 4: Development image -----
+FROM base AS dev
+# Inherits USER user from previous stage
+ENV APP_ENV=dev
+ENV APP_DEBUG=1
