@@ -3,7 +3,9 @@ import { Outlet } from "react-router-dom"
 function App() {
 
   return (
-    <Outlet />
+    <body className="bg-[url(/background.jpeg)] bg-cover bg-fixed bg-no-repeat">
+      <Outlet />
+    </body>
   )
 }
 

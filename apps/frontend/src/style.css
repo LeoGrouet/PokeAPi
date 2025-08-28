@@ -1,1 +1,31 @@
 @import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-card-bg: rgba(0, 0, 0, 0.5);
+  --color-card-bg-hover: rgba(0, 0, 0, 0.7);
+  
+  /* Types Div colors */
+  --color-fire : #FF4422;
+  --color-grass : #77CC55;
+  --color-water : #3399FF;
+  --color-bug : #AABB22;
+  --color-normal : #BBAABB;
+  --color-electric : #FFBB33;
+  --color-fairy : #fdb9e9;
+  --color-fighting : #BB5544;
+  --color-ghost : #6666BB;
+  --color-ice : #77DDFF;
+  --color-poison : #AA5599;
+  --color-ground : #DDBB55;
+  --color-flying : #6699FF;
+  --color-psychic : #FF5599;
+  --color-rock : #BBAA66;
+  --color-steel : #AAAABB;
+  --color-dark : #665544;
+  --color-dragon : #7766EE;
+
+  /* Font */
+  --font-ubuntu: "Ubuntu", sans-serif;
+}
+
