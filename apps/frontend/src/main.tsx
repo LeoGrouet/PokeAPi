@@ -4,6 +4,7 @@ import App from "./App";
 import "./style.css";
 import ErrorPage from "./pages/ErrorPage";
 import Homepage from "./pages/HomePage";
+import PokemonDetailsPage from "./pages/PokemonDetailsPage";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,17 @@ const router = createBrowserRouter([
         element: <Homepage />,
       }
     ],
+  },
+  {
+    path: "/pokemon/:id",
+    element: <App />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "",
+        element: <PokemonDetailsPage />,
+      }
+    ]
   },
 ]);
 
