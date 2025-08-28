@@ -20,25 +20,29 @@ export type PokemonType =
   | "Dragon";
 
 export const typeColors: Record<PokemonType, string> = {
-  Feu: "bg-fire text-white",
-  Plante: "bg-grass text-white",
-  Eau: "bg-water text-white",
-  Insecte: "bg-bug text-white",
-  Normal: "bg-normal text-white",
+  Feu: "bg-fire  ",
+  Plante: "bg-grass  ",
+  Eau: "bg-water  ",
+  Insecte: "bg-bug  ",
+  Normal: "bg-normal  ",
   Electric: "bg-electric text-black",
-  Fée: "bg-fairy text-white",
-  Combat: "bg-fighting text-white",
-  Spectre: "bg-ghost text-white",
-  Glace: "bg-ice text-white",
-  Poison: "bg-poison text-white",
-  Sol: "bg-ground text-white",
-  Vol: "bg-flying text-white",
+  Fée: "bg-fairy  ",
+  Combat: "bg-fighting  ",
+  Spectre: "bg-ghost  ",
+  Glace: "bg-ice  ",
+  Poison: "bg-poison  ",
+  Sol: "bg-ground  ",
+  Vol: "bg-flying  ",
   Psy: "bg-psychic text-black",
   Roche: "bg-rock text-black",
   Acier: "bg-steel text-black",
-  Ténèbres: "bg-dark text-white",
+  Ténèbres: "bg-dark  ",
   Dragon: "bg-dragon text-black",
 };
+
+export function isPokemonType(type: string): type is PokemonType {
+  return type in typeColors;
+}
 
 export default function getTypeColor(type: PokemonType): string {
   return typeColors[type];

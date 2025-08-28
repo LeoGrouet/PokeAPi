@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import PokemonCard from "../molecules/PokemonCard";
 import { IPokemon } from "../@types/types";
-import { Link } from "react-router-dom";
 
 export default function Homepage() {
 
@@ -20,9 +19,7 @@ export default function Homepage() {
   return (
     <div className="flex flex-wrap text-3xl justify-around ">
       {data.map((pokemon, index) => (
-        <Link to={`/pokemon/${pokemon.pokedexId}`}>
-          <PokemonCard key={index} name={pokemon.name} image={pokemon.image} apiTypes={pokemon.apiTypes} />
-        </Link>
+        <PokemonCard key={index} name={pokemon.name} image={pokemon.image} apiTypes={pokemon.apiTypes} pokedexId={pokemon.pokedexId} />
       ))
       }
     </div >

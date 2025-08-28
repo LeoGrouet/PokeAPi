@@ -8,13 +8,15 @@ export interface IPokemon {
 export interface IPokemonDetails {
   name: string
   image: string
-  stats: {
-    HP: number
-    attack: number
-    defense: number
-    special_attack: number
-    special_defense: number
-    speed: number
-  }
+  stats: IStats
   apiTypes: { name: string }[]
+}
+
+export interface IStats {
+  HP: number
+  attack: number
+  defense: number
+  special_attack: number
+  special_defense: number
+  speed: number
 }

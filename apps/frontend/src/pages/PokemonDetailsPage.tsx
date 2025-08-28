@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { IPokemonDetails } from "../@types/types";
 import { useParams } from "react-router-dom";
-import getTypeColor, { PokemonType, typeColors } from "../Utils/getTypeColor";
+import getTypeColor, { isPokemonType } from "../Utils/getTypeColor";
+import Stats from "../atoms/Stats";
 
 export default function PokemonDetailsPage() {
 
   const { id } = useParams<{ id: string }>();
-  const [data, setData] = useState<IPokemonDetails>({ name: "", image: "", stats: { HP: 0, attack: 0, defense: 0, special_attack: 0, special_defense: 0, speed: 0 }, apiTypes: [] })
+  const [data, setData] = useState<IPokemonDetails | null>(null)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -16,28 +17,27 @@ export default function PokemonDetailsPage() {
     }
 
     fetchData()
-  }, [setData])
+  }, [id])
 
-  function isPokemonType(type: string): type is PokemonType {
-    return type in typeColors;
+  if (!data) {
+    return <div>Loading...</div>
+  }
+
+  if (!id) {
+    return <div>ID not found</div>
   }
 
   return (
     <div className="flex flex-col text-3xl items-center">
-      <h2 className="text-white p-2.5">{data.name || "Loading"}</h2>
-      <img src={data.image || "Loading"} alt={data.name || "Loading"} className="w-2xs" />
-      <div className="flex flex-col items-center">
-        <h3 className="text-white">Stats</h3>
-        <div>
-          <p className="text-white">HP: {data.stats.HP}</p>
-          <p className="text-white">Attack: {data.stats.attack}</p>
-          <p className="text-white">Defense: {data.stats.defense}</p>
-          <p className="text-white">Special Attack: {data.stats.special_attack}</p>
-          <p className="text-white">Special Defense: {data.stats.special_defense}</p>
-          <p className="text-white">Speed: {data.stats.speed}</p>
-        </div>
+      <a href="/" className="">Home</a>
+      <div className="flex items-center">
+        <a href={`/pokemon/${(Number(id)) - 1}`} className="  text-lg  p-2.5">Pokémon précédent</a>
+        <h2 className="  p-2.5">{data.name || "Loading"}</h2>
+        <a href={`/pokemon/${(Number(id)) + 1}`} className="  text-lg  p-2.5">Pokémon suivant</a>
       </div>
-      <div className="flex w-full justify-around">
+      <img src={data.image || "Loading"} alt={data.name || "Loading"} className="w-2xs" />
+      {data && <Stats stats={data.stats} />}
+      <div className="flex gap-4">
         {data.apiTypes.map((type, index) => {
           if (!isPokemonType(type.name)) {
             return null;
